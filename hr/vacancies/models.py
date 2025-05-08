@@ -71,9 +71,9 @@ class Vacancy(models.Model):
     salary_from = models.PositiveIntegerField(null=True, blank=True)
     salary_to   = models.PositiveIntegerField(null=True, blank=True)
 
-    address_raw   = models.CharField(max_length=255)
-    published_at  = models.DateTimeField()
-    archived      = models.BooleanField(default=False)
+    address_raw  = models.CharField(max_length=255)
+    published_at = models.DateTimeField()
+    archived     = models.BooleanField(default=False)
 
     work_formats = ArrayField(
         models.CharField(max_length=20, choices=WorkFormat.choices),
@@ -93,7 +93,7 @@ class Vacancy(models.Model):
 
 
 class CandidateResponse(models.Model):
-    vacancy   = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name='responses')
+    vacancy   = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name='responses', null=True, blank=True)
     status    = models.CharField(max_length=30, choices=ResponseStatus.choices, default=ResponseStatus.NOT_VIEWED)
 
     resume_url  = models.URLField(null=True, blank=True)

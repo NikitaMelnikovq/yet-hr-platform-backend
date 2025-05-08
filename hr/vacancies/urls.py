@@ -3,7 +3,8 @@ from .views import (
     ManagerVacancyCreateAPIView,
     VacancyRetrieveAPIView,
     ManagerVacancyDetailAPIView,
-    VacancyListView
+    VacancyListView,
+    ReceiveCandidateResponseView
 )
 
 app_name = 'vacancies'
@@ -13,4 +14,5 @@ urlpatterns = [
     path('vacancies/<int:pk>/', VacancyRetrieveAPIView.as_view(), name='vacancy-detail'),
     path('vacancies/', VacancyListView.as_view(), name="vacancy-list"),
     path('manager/vacancies/<int:id>', ManagerVacancyDetailAPIView.as_view(), name='vacancy-update-delete'),
+    path('candidate/response/', ReceiveCandidateResponseView.as_view(), name='candidate-response')
 ]

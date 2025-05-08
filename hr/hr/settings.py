@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure--8fm@m^m+%v-i!^0hgd*((_u1m3)0v60sso3%%pvfch38l*soy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.122', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.1.122', 'localhost', '0.0.0.0']
 
 # Application definition
 
@@ -141,6 +141,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+        "rest_framework.parsers.FormParser",
+        "rest_framework.parsers.MultiPartParser",
+    ],
 }
 
 CORS_ALLOWED_ORIGINS = [
@@ -159,3 +164,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': False,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

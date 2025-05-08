@@ -1,8 +1,8 @@
 # vacancies/views.py
-from rest_framework import generics
+from rest_framework import generics, parsers
 from rest_framework.permissions import IsAuthenticated
 from .models import Vacancy
-from .serializers import VacancySerializer
+from .serializers import VacancySerializer, CandidateResponseSerializer
 from .permissions import IsManager
 
 class ManagerVacancyCreateAPIView(generics.CreateAPIView):
@@ -21,5 +21,32 @@ class ManagerVacancyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     http_method_names = ['get', 'patch', 'delete']
 
 class VacancyListView(generics.ListAPIView):
-    queryset = Vacancy.objects.all()
+    """
+    GET /api/v1/vacancies/                 → только опубликованные (archived=False)
+    GET /api/v1/vacancies/?archived=true   → только архив
+    GET /api/v1/vacancies/?archived=false  → только опубликованные
+    """
     serializer_class = VacancySerializer
+
+    def get_queryset(self):
+        qs = Vacancy.objects.all()
+        param = self.request.query_params.get('archived')
+
+        if param is None:                 # без параметра → по умолчанию опубликованные
+            return qs.filter(archived=False)
+
+        param = param.lower()
+        if param in ('true', '1'):
+            return qs.filter(archived=True)
+        if param in ('false', '0'):
+            return qs.filter(archived=False)
+
+        return qs  # неверное значение – без фильтра
+
+class ReceiveCandidateResponseView(generics.CreateAPIView):
+    serializer_class = CandidateResponseSerializer
+    parser_classes   = [parsers.MultiPartParser, parsers.FormParser]
+
+    
+
+    

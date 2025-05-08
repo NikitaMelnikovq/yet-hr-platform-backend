@@ -1,13 +1,28 @@
 # vacancies/serializers.py
 from django.utils import timezone
 from rest_framework import serializers
-from .models import Vacancy, Area, WorkFormat
+from .models import Vacancy, Area, WorkFormat, CandidateResponse
 
+class AreaSlugField(serializers.SlugRelatedField):
+    """
+    SlugRelatedField, который умеет создавать Area по имени,
+    если такой ещё не существует.
+    """
+    def to_internal_value(self, data):
+        try:
+            # пробуем стандартный вариант (область уже есть)
+            return super().to_internal_value(data)
+        except serializers.ValidationError:
+            # создаём новую и возвращаем объект
+            return self.get_queryset().model.objects.get_or_create(name=data)[0]
+        
 
 class VacancySerializer(serializers.ModelSerializer):
     # на входе/выходе вместо id передаём название области
-    areas = serializers.SlugRelatedField(
-        many=True, slug_field='name', queryset=Area.objects.all()
+    areas = AreaSlugField(
+        many=True,
+        slug_field="name",
+        queryset=Area.objects.all(),
     )
 
     work_formats = serializers.ListField(
@@ -27,7 +42,6 @@ class VacancySerializer(serializers.ModelSerializer):
         return area
 
     def create(self, validated_data):
-        # забираем имена регионов и форматы из validated_data
         areas_data = validated_data.pop("areas", [])
         formats_data = validated_data.pop("work_formats", [])
         validated_data['published_at'] = timezone.now()
@@ -70,5 +84,11 @@ class VacancySerializer(serializers.ModelSerializer):
     # чтобы при выводе снова получить строку, а не id
     def to_representation(self, obj):
         rep = super().to_representation(obj)
-        rep["areas"] = obj.areas.name
+        # вернём список имён, как и ожидалось на фронте
+        rep["areas"] = [area.name for area in obj.areas.all()]
         return rep
+    
+class CandidateResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CandidateResponse
+        fields = ['id', 'vacancy', 'resume_url', 'resume_file', 'name', 'birth_date', 'phone', 'email', 'experience', 'letter']
