@@ -2,10 +2,6 @@ import uuid
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
-# ────────────────────────────────
-# ВСПОМОГАТЕЛЬНЫЕ СПРАВОЧНИКИ/ENUM
-# ────────────────────────────────
-
 class WorkFormat(models.TextChoices):
     ON_SITE    = 'ON_SITE',    'Офис'
     REMOTE     = 'REMOTE',     'Удалённо'
@@ -40,10 +36,6 @@ class ResponseStatus(models.TextChoices):
     INTERVIEW_CONFIRMED = 'INTERVIEW_CONFIRMED', 'Собес. назначено'
     CLOSED              = 'CLOSED',              'Закрыто'
 
-
-# ────────────────────────────────
-# ОСНОВНЫЕ СУЩНОСТИ
-# ────────────────────────────────
 
 class Area(models.Model):
     """
@@ -93,8 +85,8 @@ class Vacancy(models.Model):
 
 
 class CandidateResponse(models.Model):
-    vacancy   = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name='responses', null=True, blank=True)
-    status    = models.CharField(max_length=30, choices=ResponseStatus.choices, default=ResponseStatus.NOT_VIEWED)
+    vacancy  = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name='responses', null=True, blank=True)
+    status   = models.CharField(max_length=30, choices=ResponseStatus.choices, default=ResponseStatus.NOT_VIEWED)
 
     resume_url  = models.URLField(null=True, blank=True)
     resume_file = models.FileField(upload_to='resumes/', null=True, blank=True)
@@ -108,7 +100,7 @@ class CandidateResponse(models.Model):
     experience = models.PositiveIntegerField()
 
     letter   = models.TextField(null=True, blank=True)
-    notes    = models.TextField(null=True, blank=True)            # HR‑заметки
+    notes    = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -116,4 +108,4 @@ class CandidateResponse(models.Model):
         verbose_name_plural = 'Отклики'
 
     def __str__(self) -> str:
-        return f'{self.name} → {self.vacancy.title}'
+        return f'{self.name} → {self.vacancy}'

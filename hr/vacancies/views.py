@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Vacancy
 from .serializers import VacancySerializer, CandidateResponseSerializer
 from .permissions import IsManager
+from .models import CandidateResponse
 
 class ManagerVacancyCreateAPIView(generics.CreateAPIView):
     serializer_class = VacancySerializer
@@ -47,6 +48,19 @@ class ReceiveCandidateResponseView(generics.CreateAPIView):
     serializer_class = CandidateResponseSerializer
     parser_classes   = [parsers.MultiPartParser, parsers.FormParser]
 
-    
+    def create(self, request, *args, **kwargs):
+        print("=== incoming payload ===")
+        print(request.data)           # <– вот тут увидишь весь JSON или form-data
+        print("========================")
+        return super().create(request, *args, **kwargs)
 
+
+class CandidateResponseList(generics.ListAPIView):
+    serializer_class = CandidateResponseSerializer
     
+    def get_queryset(self):
+        qs = CandidateResponse.objects.all()
+        status = self.request.query_params.get('status')
+        if status in dict(CandidateResponse._meta.get_field('status').choices):
+            qs = qs.filter(status=status)
+        return qs
