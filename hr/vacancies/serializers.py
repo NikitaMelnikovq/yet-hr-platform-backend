@@ -94,24 +94,12 @@ class CandidateResponseSerializer(serializers.ModelSerializer):
     vacancy_id = serializers.PrimaryKeyRelatedField(
         queryset=Vacancy.objects.all(),
         source='vacancy',
-        write_only=True
+        write_only=True,
+        required=False,
+        allow_null=True,
     )
 
 
     class Meta:
         model = CandidateResponse
-        fields = [
-            'id',
-            'vacancy_id',
-            'vacancy',
-            'resume_url',
-            'resume_file',
-            'name',
-            'birth_date',
-            'phone',
-            'email',
-            'experience',
-            'letter',
-            'status',
-            'created_at',
-        ]
+        fields = '__all__'

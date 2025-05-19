@@ -85,8 +85,8 @@ class Vacancy(models.Model):
 
 
 class CandidateResponse(models.Model):
-    vacancy  = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name='responses', null=True, blank=True)
-    status   = models.CharField(max_length=30, choices=ResponseStatus.choices, default=ResponseStatus.NOT_VIEWED)
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name='responses', null=True, blank=True)
+    status  = models.CharField(max_length=30, choices=ResponseStatus.choices, default=ResponseStatus.NOT_VIEWED)
 
     resume_url  = models.URLField(null=True, blank=True)
     resume_file = models.FileField(upload_to='resumes/', null=True, blank=True)
@@ -99,9 +99,10 @@ class CandidateResponse(models.Model):
     # Сколько лет опыта указал кандидат
     experience = models.PositiveIntegerField()
 
-    letter   = models.TextField(null=True, blank=True)
-    notes    = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    letter       = models.TextField(null=True, blank=True)
+    notes        = models.TextField(null=True, blank=True)
+    created_at   = models.DateTimeField(auto_now_add=True)
+    desired_role = models.CharField(max_length=50, default=' ')
 
     class Meta:
         verbose_name = 'Отклик'

@@ -21,6 +21,13 @@ class ManagerVacancyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsManager]
     http_method_names = ['get', 'patch', 'delete']
 
+
+class UserVacancyDetailAPIView(generics.RetrieveAPIView):
+    queryset = Vacancy.objects.all()
+    serializer_class = VacancySerializer
+    lookup_field = 'id'
+    http_method_names = ['get']
+
 class VacancyListView(generics.ListAPIView):
     """
     GET /api/v1/vacancies/                 → только опубликованные (archived=False)
@@ -64,3 +71,15 @@ class CandidateResponseList(generics.ListAPIView):
         if status in dict(CandidateResponse._meta.get_field('status').choices):
             qs = qs.filter(status=status)
         return qs
+    
+class CandidateResponseView(generics.RetrieveUpdateAPIView):
+    queryset = CandidateResponse.objects.all()
+    serializer_class = CandidateResponseSerializer
+    lookup_field = 'id'
+
+    def update(self, request, *args, **kwargs):
+        print("=== incoming payload ===")
+        print(request.data)  # Здесь можно глянуть, что именно приходит
+        self.partial = True
+        print("========================")
+        return super().update(request, *args, **kwargs)
