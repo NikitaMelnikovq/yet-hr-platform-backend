@@ -168,3 +168,5 @@ SIMPLE_JWT = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+HH_EMPLOYER_ID = "5966742"
