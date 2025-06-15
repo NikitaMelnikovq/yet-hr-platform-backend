@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    env_file:
+      - ./.env           # в корне: POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .                         # всегда корень
+      dockerfile: hr/Dockerfile.dev     # относительный путь к Dockerfile
+    env_file:
+      - ./.env                           # здесь DATABASE_URL и пр.
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./hr:/app:delegated              # код бэка
+      
+  frontend:
+    build:
+      context: .                                         # тот же корень
+      dockerfile: yet-hr-platform-frontend/Dockerfile.dev
+    env_file:
+      - ./.env                                           # тут VITE_API_URL если хочешь
+    depends_on:
+      - backend
+    ports:
+      - "3000:5173"
+    volumes:
+      - ./yet-hr-platform-frontend:/app:delegated        # твой Vite-код
+      - frontend_node_modules:/app/node_modules          # сохраняем node_modules
+
+volumes:
+  pgdata:
+  frontend_node_modules:

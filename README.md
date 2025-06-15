@@ -27,8 +27,9 @@ Backend для HR-платформы компании УЭТ. Реализует
 ### 1️⃣ Клонируй репозиторий:
 
 ```bash
-git clone https://github.com/company-uet/hr-backend.git
-cd hr-backend
+git clone https://github.com/NikitaMelnikovq/yet-hr-platform-backend.git
+cd yet-hr-platform-backend
+git clone https://github.com/acuraels/yet-hr-platform-frontend.git
 ```
 
 ### 2️⃣ Настрой переменные окружения:
@@ -38,18 +39,16 @@ cd hr-backend
 ```env
 SECRET_KEY=твой_секретный_ключ
 DEBUG=True
-DB_NAME=postgres
-DB_USER=postgres
-DB_PASSWORD=твой_пароль
-DB_HOST=db
-DB_PORT=5432
+POSTGRES_DB=hr_pl
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=твой_пароль
 ```
 
-### 3️⃣ Запусти проект через Docker:
+### 3️⃣ Запусти проект через Docker (Linux):
 
 ```bash
-docker-compose build
-docker-compose up -d
+sudo docker compose -f docker-compose.dev.yml build
+sudo docker compose -f docker-compose.dev.yml up
 ```
 
 **Приложение доступно:**  
@@ -57,26 +56,15 @@ docker-compose up -d
 
 ---
 
-## 📦 Работа с базой данных
+## 📦 Работа с приложением
 
-Запусти миграции:
-
-```bash
-docker-compose exec web python manage.py migrate
-```
+Добавь свой айпи в CORS_ALLOWED_ORIGINS, чтобы избежать ошибки CORS blocked:
 
 Создай суперпользователя:
 
 ```bash
-docker-compose exec web python manage.py createsuperuser
-```
-
----
-
-## 🧪 Запуск тестов
-
-```bash
-docker-compose exec web python manage.py test
+sudo docker exec -it yet-hr-platform-backend-backend-1 bash
+python3 manage.py createsuperuser
 ```
 
 ---
@@ -84,14 +72,16 @@ docker-compose exec web python manage.py test
 ## 📁 Структура проекта
 
 ```
-hr-backend/
-├── hr_backend/
+hr/
+├── hr/
 │   ├── settings.py
 │   ├── urls.py
 │   ├── wsgi.py
 │   └── asgi.py
-├── auth_system/  # Авторизация и аутентификация
-├── vacancies/  # Вакансии
+├── accounts/
+├── blog/
+├── media/
+├── vacancies/
 ├── docker-compose.yml
 ├── Dockerfile
 ├── manage.py
@@ -104,7 +94,7 @@ hr-backend/
 
 Swagger-документация доступна по адресу:
 
-[http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
+[http://localhost:8000/swagger/](http://localhost:8000/swagger/)
 
 ---
 
